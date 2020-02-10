@@ -22,10 +22,13 @@
 #
 ##############################################################################
 
-__version__ = '0.1.0'
+from pathlib import Path
+import typing as T
+
+__version__ = '0.2.0'
 
 
-def unlzw(data):
+def unlzw(inp: T.Any) -> bytes:
     """
     This function was adapted for Python from Mark Adler's C implementation
     https://github.com/umeat/unlzw
@@ -56,15 +59,20 @@ def unlzw(data):
     madler@alumni.caltech.edu
     """
 
+    if isinstance(inp, Path):
+        data: T.Iterable[int] = inp.read_bytes()
+    else:
+        data = inp
+
     # Convert input data stream to byte array, and get length of that array
     try:
         ba_in = bytearray(data)
     except ValueError:
-        raise TypeError("Unable to convert inputted data to bytearray")
+        raise TypeError("Unable to convert input data to bytearray")
 
     inlen = len(ba_in)
-    prefix = [None] * 65536  # index to LZW prefix string
-    suffix = [None] * 65536  # one-character LZW suffix
+    prefix: T.List[int] = [None] * 65536  # index to LZW prefix string
+    suffix: T.List[int] = [None] * 65536  # one-character LZW suffix
 
     # Process header
     if inlen < 3:
@@ -86,7 +94,7 @@ def unlzw(data):
         raise ValueError(
             "Invalid Header Flags Byte: Max code size bits out of range")
 
-    if (max_ == 9):
+    if max_ == 9:
         max_ = 10  # 9 doesn't really mean 9
 
     flags &= 0x80  # true if block compressed
@@ -94,11 +102,11 @@ def unlzw(data):
     # Clear table, start at nine bits per symbol
     bits = 9
     mask = 0x1ff
-    end = 256 if flags else 255
+    end: int = 256 if flags else 255
 
     # Ensure stream is initially valid
     if inlen == 3:
-        return 0  # zero-length input is permitted
+        return b''  # zero-length input is permitted
     if inlen == 4:  # a partial code is not okay
         raise ValueError("Invalid Data: Stream ended in the middle of a code")
 
@@ -214,5 +222,5 @@ def unlzw(data):
         # Write stack to output in forward order
         put += stack[::-1]
 
-    # Return the decompressed data as string
+    # Return the decompressed data as bytes
     return bytes(bytearray(put))
