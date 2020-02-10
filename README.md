@@ -11,7 +11,6 @@ This is a purely Python adaptation of Mark Adler's
 ['unlzw' C function](http://mathematica.stackexchange.com/questions/60531/how-can-i-read-compressed-z-file-automatically-by-mathematica/60879#60879)
 on Stackoverflow.
 Python can be much slower than using any compiled utility for the same purpose.
-Note: there are currently no Python modules which provide this functionality (the gzip system utility does - but the gzip Python module does not).
 
 ## Usage
 
@@ -28,3 +27,9 @@ uncompressed_data = unlzw3.unlzw(Path('file.Z').read_bytes())
 
 uncompressed_data = unlzw3.unlzw(Path('file.Z'))
 ```
+
+## Contributions
+
+* reference C code: Mark Adler
+* pure Python implemetation: [Brandon Owen](https://github.com/umeat/unlzw)
+* modernization, test / CI and PyPi: Michael Hirsch

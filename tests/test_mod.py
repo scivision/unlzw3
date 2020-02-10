@@ -12,5 +12,16 @@ def test_simple():
     assert unlzw(fn) == b'He110\n'
 
 
+def test_lipsum():
+    """
+    courtesy lipsum.com
+    """
+    fn = R / 'lipsum.com.Z'
+    data = unlzw(fn)
+
+    assert data == unlzw(fn.read_bytes())
+    assert len(data) == 100172
+
+
 if __name__ == '__main__':
     pytest.main([__file__])
