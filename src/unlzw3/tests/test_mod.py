@@ -6,7 +6,7 @@ from unlzw3 import unlzw
 def test_simple():
 
     with importlib.resources.path("unlzw3.tests", "hello.Z") as fn:
-        assert unlzw(fn) == b'He110\n'
+        assert unlzw(fn) == b"He110\n"
 
 
 def test_lipsum():

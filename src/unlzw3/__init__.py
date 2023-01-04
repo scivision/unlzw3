@@ -22,10 +22,11 @@
 #
 ##############################################################################
 
+from __future__ import annotations
 from pathlib import Path
 import typing as T
 
-__version__ = '0.2.1'
+__version__ = "0.2.2"
 
 
 def unlzw(inp: T.Any) -> bytes:
@@ -71,28 +72,24 @@ def unlzw(inp: T.Any) -> bytes:
         raise TypeError("Unable to convert input data to bytearray")
 
     inlen = len(ba_in)
-    prefix: T.List[int] = [None] * 65536  # index to LZW prefix string
-    suffix: T.List[int] = [None] * 65536  # one-character LZW suffix
+    prefix: list[int] = [None] * 65536  # index to LZW prefix string
+    suffix: list[int] = [None] * 65536  # one-character LZW suffix
 
     # Process header
     if inlen < 3:
-        raise ValueError(
-            "Invalid Input: Length of input too short for processing")
+        raise ValueError("Invalid Input: Length of input too short for processing")
 
-    if (ba_in[0] != 0x1f) or (ba_in[1] != 0x9d):
-        raise ValueError(
-            "Invalid Header Flags Byte: Incorrect magic bytes")
+    if (ba_in[0] != 0x1F) or (ba_in[1] != 0x9D):
+        raise ValueError("Invalid Header Flags Byte: Incorrect magic bytes")
 
     flags = ba_in[2]
 
     if flags & 0x60:
-        raise ValueError(
-            "Invalid Header Flags Byte: Flag byte contains invalid data")
+        raise ValueError("Invalid Header Flags Byte: Flag byte contains invalid data")
 
-    max_ = flags & 0x1f
+    max_ = flags & 0x1F
     if (max_ < 9) or (max_ > 16):
-        raise ValueError(
-            "Invalid Header Flags Byte: Max code size bits out of range")
+        raise ValueError("Invalid Header Flags Byte: Max code size bits out of range")
 
     if max_ == 9:
         max_ = 10  # 9 doesn't really mean 9
@@ -101,12 +98,12 @@ def unlzw(inp: T.Any) -> bytes:
 
     # Clear table, start at nine bits per symbol
     bits = 9
-    mask = 0x1ff
+    mask = 0x1FF
     end: int = 256 if flags else 255
 
     # Ensure stream is initially valid
     if inlen == 3:
-        return b''  # zero-length input is permitted
+        return b""  # zero-length input is permitted
     if inlen == 4:  # a partial code is not okay
         raise ValueError("Invalid Data: Stream ended in the middle of a code")
 
@@ -135,7 +132,7 @@ def unlzw(inp: T.Any) -> bytes:
             # machine instruction!)
             rem = (nxt - mark) % bits
 
-            if (rem):
+            if rem:
                 rem = bits - rem
                 if rem >= inlen - nxt:
                     break
@@ -158,8 +155,7 @@ def unlzw(inp: T.Any) -> bytes:
         left += 8
         if left < bits:
             if nxt == inlen:
-                raise ValueError(
-                    "Invalid Data: Stream ended in the middle of a code")
+                raise ValueError("Invalid Data: Stream ended in the middle of a code")
             buf += ba_in[nxt] << left
             nxt += 1
             left += 8
@@ -184,7 +180,7 @@ def unlzw(inp: T.Any) -> bytes:
 
             # Go back to nine bits per symbol
             bits = 9  # initialize bits and mask
-            mask = 0x1ff
+            mask = 0x1FF
             end = 255  # empty table
             continue  # get next code
 

@@ -1,8 +1,6 @@
 # unlzw3
 
-![ci](https://github.com/scivision/unlzw3/workflows/ci/badge.svg)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/scivision/unlzw3.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/scivision/unlzw3/context:python)
-[![PyPi versions](https://img.shields.io/pypi/pyversions/unlzw3.svg)](https://pypi.python.org/pypi/unlzw3)
+[![ci](https://github.com/scivision/unlzw3/actions/workflows/ci.yml/badge.svg)](https://github.com/scivision/unlzw3/actions/workflows/ci.yml)
 [![PyPi Download stats](http://pepy.tech/badge/unlzw3)](http://pepy.tech/project/unlzw3)
 
 Pure Python decompression module for .Z files compressed using Unix compress utility.
