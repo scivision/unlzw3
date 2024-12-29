@@ -101,3 +101,4 @@ ENV/
 
 # mypy
 .mypy_cache/
+src/unlzw3/unlzw_cython.c
